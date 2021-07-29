@@ -1,0 +1,250 @@
+
+<div class="container">
+  <h2>Manual Order Creation</h2>
+  <form [formGroup]="shippingForm" (ngSubmit)="loadinfo(shippingForm.value)">
+
+    <table class="fixed">
+      <tr>
+        <td>Customer :</td>
+        <td>
+          <select id="customer" [formControl]="shippingForm.controls['customer']" (change)="customerchange()">
+            <option *ngFor="let opt of customers" [ngValue]="opt">{{opt}}</option>
+          </select>
+        </td>
+      </tr>
+      <!--<tr>
+        <td>Order # :</td>
+        <td>
+          <input type="number" style="width: 94px;" id="orderno" placeholder="Reorder only" [formControl]="shippingForm.controls['orderno']" (change)="ordernumberchange()" />
+        </td>
+      </tr>-->
+      <tr>
+        <td>New Order # :</td>
+        <td>
+          <span>{{shippingForm.get('neworderno').value}}</span>
+          <!--<input type="number" style="width: 94px;" id="orderno" placeholder="Order #" [formControl]="shippingForm.controls['neworderno']" (change)="ordernumberchange()" />-->
+        </td>
+        <td>
+          <button class="button" type="submit">Load Info</button>
+        </td>
+      </tr>
+      <tr *ngIf="isManual">
+        <td>Customer #:</td>
+        <td>
+          <input type="text" id="customerno" [formControl]="shippingForm.controls['customerno']" />
+        </td>
+      </tr>
+    </table>
+  </form>
+ 
+
+  <h2>Item Info</h2>
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr align="center">
+        <th scope="col">#</th>
+        <th scope="col" for="sku">Sku *</th>
+        <th scope="col" for="desc">Description</th>
+        <th scope="col" for="qty">Qty *</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let element of items; let i = index">
+        <td align="center">
+          <span>{{i+1}}</span>
+        </td>
+        <td>
+          <input type="text" list="skulist" id="sku" name="sku" required #sku="ngModel" [(ngModel)]="element.sku" (change)="selectSku(element.sku, element.qty)" />
+          <datalist id="skulist">
+            <select>
+              <option *ngFor="let item of itemlist" [value]="item.sku"></option>
+            </select>
+          </datalist>
+        </td>
+        <td>
+          <input type="text" list="desclist" id="desc" name="desc" [(ngModel)]="element.desc" (change)="selectDesc(element.desc, element.qty)" />
+          <datalist id="desclist">
+            <select>
+              <option *ngFor="let item of itemlist" [value]="item.desc"></option>
+            </select>
+          </datalist>
+        </td>
+        <td>
+          <input type="number" id="qty" name="qty" required #qty="ngModel" [(ngModel)]="element.qty">
+        </td>
+        <td>
+          <span style="padding-right: 5px;">
+            <button type="button" (click)="add()">add</button>
+            <button type="button" (click)="delete(i)">delete</button>
+          </span>
+        </td>
+    </tbody>
+  </table>
+
+
+
+
+  <h2>Shipping Info</h2>
+
+  <div class="row">
+    <div class="col-sm">
+      <table class="table table-bordered table-sm">
+        <tr>
+          <td scope="col">Name *</td>
+          <td>
+            <input type="text" [(ngModel)]="shipTo.name" id="name" name="name" required #name="ngModel">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Company</td>
+          <td>
+            <input type="text" [(ngModel)]="shipTo.company" id="company" name="company" #company="ngModel">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Address 1 *</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.address1" id="address1" name="address1" required #address1="ngModel">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Address 2</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.address2">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">City *</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.city" id="city" name="city" required #city="ngModel">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">State *</td>
+          <td>
+            <input type="text" list="statelist" name="state" [(ngModel)]="shipTo.state" id="state" required #state="ngModel" />
+            <datalist id="statelist">
+              <select>
+                <option *ngFor="let state of statelist" [value]="state.name"></option>
+              </select>
+            </datalist>
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">ZipCode *</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.zip" id="zip" name="zip" required #zip="ngModel">
+          </td>
+
+        </tr>
+        <tr>
+          <td scope="col">Country</td>
+          <td>
+            <input type="text" [(ngModel)]="shipTo.country" id="country" name="country" #country="ngModel">
+          </td>
+
+        </tr>
+
+      </table>
+      <div [hidden]="name.valid && name.touched" style="color:crimson; font-size:small">* Name is required</div>
+      <div [hidden]="address1.valid && address1.touched" style="color:crimson; font-size:small">* Address1 is required</div>
+      <div [hidden]="city.valid && city.touched" style="color:crimson; font-size:small">* City is required</div>
+      <div [hidden]="state.valid && state.touched" style="color:crimson; font-size:small">* State is required</div>
+      <div [hidden]="zip.valid && zip.touched" style="color:crimson; font-size:small">* Zipcode is required</div>
+      <!--<div [hidden]="!sku.hasError('required')" style="color:crimson; font-size:small">* Sku is required</div>-->
+
+
+
+
+    </div>
+
+
+
+    <div class="col-sm">
+
+
+
+      <table class="fixed" *ngFor="let label of labels; let i=index">
+        <tr>
+          <td class="r">Shipping Location*</td>
+          <td>
+            <select [formControl]="shippingForm.controls['location']">
+              <option *ngFor="let opt of locations" [ngValue]="opt">{{opt}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="r">Carrier</td>
+          <td>
+            <select [(ngModel)]="label.Carrier">
+              <option *ngFor="let opt of carriers" [ngValue]="opt">{{opt}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="r">Shipping Option</td>
+          <td>
+            <select [(ngModel)]="label.ShippingOption">
+              <option [hidden]="label.Carrier=='FedEx'" *ngFor="let opt of endishippingopt" [ngValue]="opt">{{opt}}</option>
+              <option [hidden]="label.Carrier=='Endicia'" *ngFor="let opt of fedshippingopt" [ngValue]="opt">{{opt}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="r">Signature</td>
+          <td>
+            <select [(ngModel)]="label.IsSignature">
+              <option [ngValue]="true">True</option>
+              <option [ngValue]="false">False</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="r">Certified</td>
+          <td>
+            <select [(ngModel)]="label.IsCertified">
+              <option [ngValue]="true">True</option>
+              <option [ngValue]="false">False</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+
+      <form [formGroup]="shippingForm">
+
+        <table class="fixed">
+          <tr>
+            <td class="r">Charge to Customer</td>
+            <td>
+              <select [formControl]="shippingForm.controls['isChargeToCustomer']">
+                <option [ngValue]="true">True</option>
+                <option [ngValue]="false">False</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+      </form>
+
+      <button type="button"
+              [disabled]="(name.invalid && name.untouched) ||
+                      (address1.invalid && address1.untouched) ||
+                      (city.invalid && city.untouched) ||
+                      (state.invalid && state.untouched) ||
+                      (zip.invalid && zip.untouched)
+                     "
+              (click)="submit()">
+        Submit
+      </button>
+
+    </div>
+  </div>
+</div>
+
+
+
+

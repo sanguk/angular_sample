@@ -1,0 +1,282 @@
+<div class="container">
+  <h3>Create a shipment (New)</h3>
+  <div><h6>1. Internal Reference </h6></div>
+
+  <!--<button (click)="printzpltest()">print test</button>-->
+  <table class="table table-bordered table-sm fixed">
+    <tr>
+      <td scope="col">Billing Account</td>
+      <td>
+        <select [(ngModel)]="labelForm.billingaccount">
+          <option *ngFor="let opt of billingaccounts" [value]="opt">{{opt}}</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td scope="col">Customer</td>
+      <td>
+        <input type="text" list="customers" [(ngModel)]="labelForm.customer">
+        <datalist id="customers">
+          <select>
+            <option *ngFor="let customer of customers" [value]="customer"></option>
+          </select>
+        </datalist>
+      </td>
+    </tr>
+    <tr>
+      <td scope="col">Reference #</td>
+      <td>
+        <input type="text" [(ngModel)]="labelForm.reference">
+      </td>
+    </tr>
+  </table>
+
+
+  <div class="row">
+    <div class="col-sm">
+
+      <div class="custom-control-inline"><h6>2. Ship From:</h6></div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="customRadioInline1" name="customRadioInline1"
+               class="custom-control-input"
+               (change)="changelocation1()">
+        <label class="custom-control-label" for="customRadioInline1">AWISEC</label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="customRadioInline2" name="customRadioInline1"
+               class="custom-control-input"
+               (change)="changelocation2()">
+        <label class="custom-control-label" for="customRadioInline2">AWICAS</label>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <input type="radio" id="customRadioInline3" name="customRadioInline1"
+               class="custom-control-input"
+               (change)="changelocation3()">
+        <label class="custom-control-label" for="customRadioInline3">MANUAL</label>
+      </div>
+
+
+      <table class="table table-bordered table-sm">
+        <tr>
+          <td scope="col">Name</td>
+          <td>
+            <input type="text" [(ngModel)]="shipFrom.name">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Company</td>
+          <td>
+            <input type="text" [(ngModel)]="shipFrom.company">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Address 1</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipFrom.address1">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Address 2</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipFrom.address2">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">City *</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipFrom.city">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">State</td>
+          <td>
+            <input type="text" list="statelist" name="state" [(ngModel)]="shipFrom.state" />
+            <datalist id="statelist">
+              <select>
+                <option *ngFor="let state of statelist" [value]="state.name"></option>
+              </select>
+            </datalist>
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">ZipCode</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipFrom.zip">
+          </td>
+
+        </tr>
+        <tr>
+          <td scope="col">Country</td>
+          <td>
+            <input type="text" [(ngModel)]="shipFrom.country">
+          </td>
+
+        </tr>
+
+      </table>
+
+
+    </div>
+    <div class="col-sm">
+      <h6>3. Ship To:</h6>
+
+      <table class="table table-bordered table-sm">
+        <tr>
+          <td scope="col">Name</td>
+          <td>
+            <input type="text" [(ngModel)]="shipTo.name">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Company</td>
+          <td>
+            <input type="text" [(ngModel)]="shipTo.company">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Address 1</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.address1">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Address 2</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.address2">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">City *</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.city">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">State *</td>
+          <td>
+            <input type="text" list="statelist" name="state" [(ngModel)]="shipTo.state" />
+            <datalist id="statelist">
+              <select>
+                <option *ngFor="let state of statelist" [value]="state.name"></option>
+              </select>
+            </datalist>
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">ZipCode *</td>
+          <td>
+
+            <input type="text" [(ngModel)]="shipTo.zip">
+          </td>
+
+        </tr>
+        <tr>
+          <td scope="col">Country</td>
+          <td>
+            <input type="text" [(ngModel)]="shipTo.country">
+          </td>
+
+        </tr>
+
+      </table>
+
+    </div>
+  </div>
+  <h6>4. Shipping Information</h6>
+
+  <table class="table table-bordered table-sm">
+    <tr>
+      <td scope="col">Mail Provider</td>
+      <td>
+        <select [(ngModel)]="labelForm.carrier">
+          <option *ngFor="let opt of mailproviders">
+            {{opt}}
+          </option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td scope="col">Service Type</td>
+      <td>
+        <select [(ngModel)]="labelForm.shippingoption">
+          <option [hidden]="carrier=='FedEx'" *ngFor="let opt of endishippingopt" [ngValue]="opt">{{opt}}</option>
+          <option [hidden]="carrier=='Endicia'" *ngFor="let opt of fedshippingopt" [ngValue]="opt">{{opt}}</option>
+        </select>
+      </td>
+    </tr>
+  </table>
+  <h6>Package Information</h6>
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr align="center">
+        <th scope="col">Qty</th>
+        <th scope="col">Weight(lb)</th>
+        <th scope="col">Length</th>
+        <th scope="col">Width</th>
+        <th scope="col">Height</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of labelForm.labelpackages; let i = index">
+        <td>
+          <input type="number" [(ngModel)]="p.qty" />
+        </td>
+        <td>
+          <input type="number" [(ngModel)]="p.weight" />
+        </td>
+        <td>
+          <input type="number" [(ngModel)]="p.length" />
+        </td>
+        <td>
+          <input type="number" [(ngModel)]="p.width">
+        </td>
+        <td>
+          <input type="number" [(ngModel)]="p.height">
+        </td>
+        <td>
+          <button type="button" (click)="addarow()">Add</button>
+          <button type="button" (click)="deletelabelpackage(i)">delete</button>
+        </td>
+    </tbody>
+  </table>
+
+  <h6>5. Additional Services</h6>
+  <table class="table table-bordered table-sm">
+    <tr>
+      <td scope="col">Certified</td>
+      <td>
+        <select [(ngModel)]="labelForm.isCertified">
+          <option [ngValue]="false">False</option>
+          <option [ngValue]="true">True</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td scope="col">Signature</td>
+      <td>
+        <select [(ngModel)]="labelForm.isSignature">
+          <option [ngValue]="false">False</option>
+          <option [ngValue]="true">True</option>
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td scope="col">Insured Value</td>
+      <td>
+
+        <input type="number" [(ngModel)]="labelForm.insuredValue">
+      </td>
+    </tr>
+  </table>
+
+  <button (click)="passmodel()">Create & Print Label</button>
+
+</div>

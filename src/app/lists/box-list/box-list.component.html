@@ -1,0 +1,75 @@
+<h1>Box List</h1>
+<form [formGroup]="mainForm" (ngSubmit)="onSubmit(mainForm.value)">
+  <div class="row">
+    <div class="col-xl-1 col-lg-4 col-md-12" style="padding-top:5px;">
+      <select formControlName="customer" class="browser-default custom-select" style="width:120px;font-size:small; ">
+        <option *ngFor="let opt of customers" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div class="col-xl-1 col-lg-4 col-md-12">
+      <button mdbBtn class="btn btn-amber" size="sm" type="submit" mdbWavesEffect>Submit</button>
+    </div>
+  </div>
+</form>
+
+<p *ngIf="boxlist!=null" align="right">
+  <button mdbBtn color="deep-orange" rounded="true" (click)="add()" class="btn btn-success" size="sm" mdbWavesEffect>Add Box</button>
+</p>
+
+<table class="table table-bordered table-sm" style="margin-top: 10px;">
+  <thead>
+    <tr align="center">
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Width</th>
+      <th scope="col">Height</th>
+      <th scope="col">Length</th>
+      <th scope="col">Weight(lb)</th>
+      <th scope="col">OrderBy</th>
+      <th scope="col">CreatedBy</th>
+      <th scope="col">Updatedby</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let element of boxlist; let i = index">
+      <td>
+        {{i+1}}
+      </td>
+      <td>
+        <span [hidden]="element.isEditable">{{element.name}}</span>
+        <input type="text" [(ngModel)]="element.name" [hidden]="!element.isEditable" />
+      </td>
+      <td>
+        <span [hidden]="element.isEditable">{{element.width}}</span>
+        <input type="number" [(ngModel)]="element.width" [hidden]="!element.isEditable">
+      </td>
+      <td>
+        <span [hidden]="element.isEditable">{{element.height}}</span>
+        <input type="number" [(ngModel)]="element.height" [hidden]="!element.isEditable">
+      </td>
+      <td>
+        <span [hidden]="element.isEditable">{{element.length}}</span>
+        <input type="number" [(ngModel)]="element.length" [hidden]="!element.isEditable">
+      </td>
+      <td>
+        <span [hidden]="element.isEditable">{{element.weight}}</span>
+        <input type="number" [(ngModel)]="element.weight" [hidden]="!element.isEditable">
+      </td>
+      <td>
+        <span [hidden]="element.isEditable">{{element.orderBy}}</span>
+        <input type="number" [(ngModel)]="element.orderBy" [hidden]="!element.isEditable">
+      </td>
+      <td>
+        <span>{{element.createdBy}}</span>
+      </td>
+      <td>
+        <span>{{element.updatedBy}}</span>
+      </td>
+      <td>
+        <button (click)="edit(i)" [hidden]="element.isEditable">Edit</button>
+        <button (click)="update(i)" [hidden]="!element.isEditable">Update</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

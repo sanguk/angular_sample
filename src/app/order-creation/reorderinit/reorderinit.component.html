@@ -1,0 +1,204 @@
+
+<div class="container">
+  <form [formGroup]="shippingForm" (ngSubmit)="loadinfo()">
+
+    <h3>ReOrder</h3>
+    <table class="fixed">
+      <tr>
+        <td>New Order # :</td>
+        <td>
+          <input type="number" style="width: 94px;" id="orderno" placeholder="Reorder only" [formControl]="shippingForm.controls['orderno']" (change)="ordernumberchange()" />
+        </td>
+        <td>
+          <button class="button" type="submit">Load Info</button>
+        </td>
+      </tr>
+      <!--<tr>
+        <td>New Order # :</td>
+        <td>
+          <span>{{shippingForm.get('neworderno').value}}</span>
+        </td>
+      </tr>-->
+    </table>
+  </form>
+
+  
+    <h5>Item Info</h5>
+    <table class="table table-bordered table-sm">
+      <thead>
+        <tr align="center">
+          <th scope="col">#</th>
+          <th scope="col" for="sku">Sku *</th>
+          <th scope="col" for="desc">Description</th>
+          <th scope="col" for="qty">Qty *</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let element of tempitems; let i = index">
+          <td align="center">
+            <span>{{i+1}}</span>
+          </td>
+          <td>
+            <input type="text" list="skulist" class="form-control" [(ngModel)]="element.sku" [ngModelOptions]="{standalone: true}" (change)="selectSku(i)" />
+            <datalist id="skulist">
+              <select>
+                <option *ngFor="let item of itemlist" [value]="item.sku"></option>
+              </select>
+            </datalist>
+          </td>
+          <td>
+            <input type="text" list="desclist" class="form-control" [(ngModel)]="element.desc" [ngModelOptions]="{standalone: true}" (change)="selectDesc(i)" />
+            <datalist id="desclist">
+              <select>
+                <option *ngFor="let item of itemlist" [value]="item.desc"></option>
+              </select>
+            </datalist>
+          </td>
+          <td>
+            <input type="number" class="form-control" [(ngModel)]="element.qty" [ngModelOptions]="{standalone: true}" />
+          </td>
+          <td>
+            <span style="padding-right: 5px;">
+              <button (click)="addlist()">add</button>
+              <button (click)="deletelist(i)">delete</button>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+
+    <form [formGroup]="shippingForm">
+      <h5>Address</h5>
+      <table class="table table-bordered table-sm" formGroupName="shipTo">
+        <tr>
+          <td scope="col">Name <span class="text-danger">*</span></td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.name" [ngModelOptions]="{standalone: true}">
+          </td>
+          <td scope="col">Company</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.company" [ngModelOptions]="{standalone: true}">
+          </td>
+        </tr>
+
+        <tr>
+          <td scope="col">Email</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.email" [ngModelOptions]="{standalone: true}">
+          </td>
+          <td scope="col">Phone</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.phone" [ngModelOptions]="{standalone: true}">
+          </td>
+        </tr>
+        <tr>
+          <td scope="col">Address1</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.address1" [ngModelOptions]="{standalone: true}">
+          </td>
+          <td scope="col">Address2</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.address2" [ngModelOptions]="{standalone: true}">
+          </td>
+        </tr>
+
+        <tr>
+          <td scope="col">City</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.city" [ngModelOptions]="{standalone: true}">
+          </td>
+          <td scope="col">State</td>
+          <td>
+            <input type="text" list="statelist" class="form-control" [(ngModel)]="address.state" [ngModelOptions]="{standalone: true}">
+            <datalist id="statelist">
+              <select>
+                <option *ngFor="let state of statelist" [value]="state.name"></option>
+              </select>
+            </datalist>
+          </td>
+
+        </tr>
+
+        <tr>
+          <td scope="col">Country</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.country" [ngModelOptions]="{standalone: true}">
+          </td>
+          <td scope="col">Zip</td>
+          <td>
+            <input type="text" class="form-control" [(ngModel)]="address.zip" [ngModelOptions]="{standalone: true}">
+          </td>
+        </tr>
+      </table>
+
+      <h5>Shipping Option</h5>
+      <table class="fixed" formArrayName="labels" *ngFor="let label of shippingForm.get('labels').controls; let i=index">
+        <tr>
+          <td>Shipping Location <span class="text-danger">*</span></td>
+          <td>
+            <select [formControl]="shippingForm.controls['location']">
+              <option *ngFor="let opt of locations" [ngValue]="opt">{{opt}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr [formGroupName]="i">
+          <td class="r">Carrier</td>
+          <td>
+            <select formControlName="Carrier">
+              <option *ngFor="let opt of carriers" [ngValue]="opt">{{opt}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr [formGroupName]="i">
+          <td class="r">Shipping Option</td>
+          <td>
+            <select formControlName="ShippingOption">
+              <option [hidden]="whichCarrier(i)=='FedEx'" *ngFor="let opt of endishippingopt" [ngValue]="opt">{{opt}}</option>
+              <option [hidden]="whichCarrier(i)=='Endicia'" *ngFor="let opt of fedshippingopt" [ngValue]="opt">{{opt}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr [formGroupName]="i">
+          <td class="r">Signature</td>
+          <td>
+            <select formControlName="IsSignature">
+              <option [ngValue]="true">True</option>
+              <option [ngValue]="false">False</option>
+            </select>
+          </td>
+        </tr>
+        <tr [formGroupName]="i">
+          <td class="r">Certified</td>
+          <td>
+            <select formControlName="IsCertified">
+              <option [ngValue]="true">True</option>
+              <option [ngValue]="false">False</option>
+            </select>
+          </td>
+        </tr>
+
+      </table>
+    </form>
+    <form [formGroup]="shippingForm">
+
+      <table class="fixed">
+        <tr>
+          <td class="r">Reason</td>
+          <td>
+            <select [formControl]="shippingForm.controls['content']">
+              <option *ngFor="let opt of reasons" [ngValue]="opt">{{opt}}</option>
+            </select>
+
+          </td>
+        </tr>
+      </table>
+    </form>
+
+
+    <button (click)="submit()">Submit</button>
+
+
+
+</div>

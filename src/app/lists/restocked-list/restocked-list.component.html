@@ -1,0 +1,83 @@
+<h1>Restocked List</h1>
+
+<form [formGroup]="mainForm" (ngSubmit)="onSubmit(mainForm.value)" class="float-left">
+  <div class="row" style="padding-bottom:5px; padding-right:10px;">
+
+    <div style="padding-left:15px;padding-right:15px;">
+      <select formControlName="location" class="browser-default custom-select" style="width: 100px;font-size: small;">
+        <option *ngFor="let opt of locations" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div>
+      <select formControlName="customer" class="browser-default custom-select" style="width:120px;font-size:small;">
+        <option *ngFor="let opt of customers" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div style="padding-left:20px;padding-right:10px;">
+      <mdb-date-picker [inline]="true" name="mydate" [options]="myDatePickerOptions" [placeholder]="'From'" formControlName="startAt" required></mdb-date-picker>
+    </div>
+    <div>
+      <mdb-date-picker [inline]="true" name="mydate" [options]="myDatePickerOptions" [placeholder]="'To'" formControlName="endAt" required></mdb-date-picker>
+    </div>
+    <div style="padding-left:15px;padding-right:15px;">
+      <button mdbBtn class="btn btn-amber" size="sm" type="submit" mdbWavesEffect>Submit</button>
+    </div>
+    <div style="padding-top:10px;" [hidden]="!total">
+      Total: {{total}}
+    </div>
+  </div>
+</form>
+
+<div style="padding-bottom: 5px;padding-top: 5px;">
+  <div class="row float-right">
+    <!--<button mdbBtn type="button" color="amber" rounded="true" (click)="gotoRRCreation()" class="btn btn-success" size="sm" mdbWavesEffect>Create Return Receiving</button>-->
+    <button mdbBtn type="button" color="success" rounded="true" (click)="ExportTOExcel()" class="btn btn-success" size="sm" mdbWavesEffect>Excel</button>
+  </div>
+</div>
+
+
+<table class="table table-bordered table-sm" style="margin-top: 10px;" #TABLE #table>
+  <tr align="center">
+    <th></th>
+    <th>Location</th>
+    <th>Received #</th>
+    <th>RMA #</th>
+    <th>Original Order #</th>
+    <th>Original Customer #</th>
+    <th>Items (Sku: Grade)</th>
+    <th>Created by</th>
+    <th>Created At</th>
+    <th>Completed At</th>
+    <th>Memoes</th>
+    <th>Logs</th>
+
+  </tr>
+  <tr mdbTableCol *ngFor="let el of elements ; let i = index">
+    <td>{{i+1}}</td>
+    <td>{{el.location}}</td>
+    <td>{{el.receivedNo}}</td>
+    <td>{{el.rmaNo}}</td>
+    <td>{{el.originalNo}}</td>
+    <td>{{el.originalCustomerNo}}</td>
+    <td>
+      <div *ngFor="let item of el.items;">
+        {{item.sku}} : {{item.grade}} - receiptQty: {{item.receiptQty}} /Note:{{item.note}}
+      </div>
+    </td>
+    <td>{{el.createdBy}}</td>
+    <td>{{el.createdAt | date:'MM/dd/yyyy HH:mm'}}</td>
+    <td>{{el.completedAt | date:'MM/dd/yyyy HH:mm'}}</td>
+    <td>
+      <div *ngFor="let memo of el.memoes;">
+        {{memo.content}} ({{memo.createdAt| date:'MM/dd/yyyy HH:mm'}})
+      </div>
+    </td>
+    <td>
+      <div *ngFor="let log of el.logs;">
+        {{log.content}} ({{log.createdAt| date:'MM/dd/yyyy HH:mm'}})
+      </div>
+    </td>
+
+  </tr>
+</table>
+

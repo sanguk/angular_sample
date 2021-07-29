@@ -1,0 +1,129 @@
+<h4><span *ngIf="shipping">{{shipping.customer}}</span> Smart Packing</h4>
+
+<div *ngIf="shipping">
+  <div class="row">
+    <div class="col-lg-12">
+      orderNo: {{shipping.orderNo}}, tplId: {{shipping.tplId}}, shippingOption: {{shipping.shippingOption}}, packingSlipPrint: {{shipping.packingSlipPrint}}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3">
+      <h5>
+        ITEMS TO BE PACKED ({{shipping.orderNo}})
+      </h5>
+    </div>
+    <div class="col-lg-2">
+      <input *ngIf="!shipping.packingEndAt" type="text" class="form-control" [(ngModel)]="barcodeValue" (keyup.enter)="onSkuChange($event.target.value)" placeholder="Focus" #input2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th></th>
+            <th>SKU</th>
+            <th>DESCRIPTION</th>
+            <th>ORDERED</th>
+            <th>PACKED</th>
+            <th>REMAINING</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of shipping.packingSlip.items; let i = index">
+            <td>{{i+1}}</td>
+            <td>{{item.sku}}</td>
+            <td>{{item.desc}}</td>
+            <td>{{item.qty}}</td>
+            <td>{{getPackCount(item.sku)}}</td>
+            <td>{{item.qty - getPackCount(item.sku)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <h5>Pack Item</h5>
+    </div>
+    <div class="col-lg-2">
+      <span>PackageWeight </span><span *ngIf="shipping.packingEndAt">{{shipping.weight}}</span><span>(</span><span class="red-text">LB</span><span>)</span>
+      <input *ngIf="!shipping.packingEndAt" type="text" class="form-control" [(ngModel)]="packageWeight" placeholder="LB">
+    </div>
+    <div class="col-lg-5">
+
+    </div>
+    <div class="col-lg-5">
+
+    </div>
+    <div class="col-lg-12">
+
+      <div *ngFor="let package of shipping.packages; let i = index">
+        <table class="table table-bordered table-condensed">
+          <tr>
+            <td>Box Type</td>
+            <td>Name</td>
+            <td>Desc</td>
+            <td>Width x Length x Height</td>
+            <td>Weight</td>
+          </tr>
+          <tr>
+            <td>
+              <mdb-select *ngIf="!shipping.packingEndAt" [options]="optionsSelect" [(ngModel)]="selectedValue" (ngModelChange)="getSelectedBox($event, i)" placeholder="Choose your Box"></mdb-select>
+            </td>
+            <td>{{package.box.name}}</td>
+            <td>{{package.box.desc}}</td>
+            <td>{{package.box.width.toFixed(2)}} x {{package.box.length.toFixed(2)}} x {{package.box.height.toFixed(2)}}</td>
+            <td>{{package.box.weight}}</td>
+          </tr>
+        </table>
+
+        <table class="table table-bordered table-condensed">
+          <tr>
+            <td>BoxNo</td>
+            <td>Sku</td>
+            <td>Qty</td>
+            <td>Weight</td>
+            <td>Weight Unit</td>
+            <td>Delete</td>
+          </tr>
+
+          <tr *ngFor="let packageItem of package.packageItems; let j = index">
+            <td>{{i+1}}</td>
+            <td>{{packageItem.sku}}</td>
+            <td>{{packageItem.qty}}</td>
+            <td>{{packageItem.weight}}</td>
+            <td>{{packageItem.weightUnit}}</td>
+            <td>
+              <button *ngIf="!shipping.packingEndAt" (click)="deletePackItem(packageItem.sku)">Delete -1</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <span *ngIf="shipping.packingSlipPrint">
+        <a [routerLink]="['/task',cus,shipping.packingSlipPrint]">
+          <button mdbBtn class="btn btn-default btn-sm" type="button" color="mdb-color" mdbWavesEffect>Exit</button>
+        </a>
+      </span>
+      <span *ngIf="!shipping.packingSlipPrint">
+        <a [routerLink]="['/individualshipping',cus,shipping.orderNo]">
+          <button mdbBtn class="btn btn-default btn-sm" type="button" color="mdb-color" mdbWavesEffect>Exit</button>
+        </a>
+      </span>
+
+      <button *ngIf="!shipping.packingEndAt" mdbBtn class="btn btn-default btn-sm" type="button" color="mdb-color" (click)="onCompletedPacking()" mdbWavesEffect>Completed</button>
+      <button *ngIf="shipping.packingEndAt && (!shipping.labels || !shipping.labels[0] || (shipping.labels && shipping.labels[0] && !shipping.labels[0].trackingNo))" mdbBtn class="btn btn-default btn-sm" type="button" color="mdb-color" (click)="undoCompletedPacking()" mdbWavesEffect>Undo Completed</button>
+      <button *ngIf="shipping.packingEndAt && (!shipping.labels || !shipping.labels[0] || (shipping.labels && shipping.labels[0] && !shipping.labels[0].trackingNo))" mdbBtn class="btn btn-default btn-sm" type="button" color="mdb-color" (click)="generateLabel()"  mdbWavesEffect>Generate Label</button>
+      <button *ngIf="shipping.packingEndAt && shipping.labels && shipping.labels[0] && shipping.labels[0].trackingNo" mdbBtn class="btn btn-default btn-sm" type="button" color="mdb-color" (click)="reprintLabel()" mdbWavesEffect>Reprint Label</button>
+    </div>
+  </div>
+</div>
+

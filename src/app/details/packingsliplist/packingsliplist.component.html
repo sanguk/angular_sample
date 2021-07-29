@@ -1,0 +1,94 @@
+<h3>{{cus}} Shipping List from Task # {{no}}</h3>
+
+<input type="text" (keyup.enter)="onSearchChange($event.target.value)" autofocus #input1 />
+<div align="right" style="padding-bottom:5px;">
+  <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+    <button mdbBtn type="button" color="mdb-color" outline="true" class="waves-light" size="sm" mdbWavesEffect (click)="passthecheckedlist()">Change Selected-Task Location</button>
+    <button mdbBtn type="button" color="mdb-color" outline="true" class="waves-light" size="sm" mdbWavesEffect (click)="generateV3Label()">Generate V3PackingSlip</button>
+    <button mdbBtn type="button" color="mdb-color" outline="true" class="waves-light" size="sm" mdbWavesEffect (click)="ExportTOExcel()">Excel</button>
+  </div>
+</div>
+
+<div>
+  {{total}}
+</div>
+
+<div #TABLE #table>
+  <table class="table table-bordered table-sm table-hover">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">type</th>
+      <th scope="col">tplId</th>
+      <th scope="col">orderNo</th>
+      <th scope="col">Customer #</th>
+      <th scope="col">location</th>
+      <th scope="col">state</th>
+      <th scope="col">isHold</th>
+      <th scope="col">name / email</th>
+      <th scope="col">items</th>
+      <th scope="col">shippingOption</th>
+      <th scope="col">paidAt</th>
+      <th scope="col">Task</th>
+      <th scope="col">packingSlipPrintAt</th>
+      <th scope="col">packingEndAt</th>
+      <th scope="col">packingEndBy</th>
+      <th scope="col">trackingNo</th>
+      <th scope="col">log</th>
+      <th scope="col">memo</th>
+      <th scope="col">Actions</th>
+    </tr>
+
+
+
+    <tr *ngFor="let el of elements; let i = index">
+      <td>
+        <input type="checkbox" value="el.id" (change)="changeIndividualLocation($event, el.id)" />
+      </td>
+      <td>{{el.type}}</td>
+      <td>{{el.tplId}}</td>
+      <td><a [routerLink]="['/individualshipping',el.customer,el.orderNo]">{{el.orderNo}}</a></td>
+      <td><a [routerLink]="['/packing',el.customer,el.orderNo]">{{el.customerNo}}</a></td>
+      <td>{{el.location}}</td>
+      <td>{{el.shipTo.state }}</td>
+      <td>
+        <span *ngIf="el.isHold" class="red-text">{{el.isHold}}</span>
+        <span *ngIf="!el.isHold">{{el.isHold}}</span>
+      </td>
+      <td>
+        <span *ngIf="el.shipTo">{{el.shipTo.name}}</span><br />
+        <span *ngIf="el.shipTo">{{el.shipTo.email}}</span>
+      </td>
+      <td>
+        <div *ngFor="let item of el.items;">
+          {{item.sku}} ({{item.qty}})
+        </div>
+      </td>
+      <td>{{el.shippingOption}}</td>
+      <td>{{el.paidAt | date:'MM/dd/yyyy HH:mm'}}</td>
+      <td>{{el.packingSlipPrint}}</td>
+      <td>{{el.packingSlipPrintAt | date:'MM/dd/yyyy HH:mm'}}</td>
+      <td>{{el.packingEndAt | date:'MM/dd/yyyy HH:mm'}}</td>
+      <td>{{el.packingEndBy}}</td>
+      <td>
+        <div *ngFor="let label of el.labels;">
+          <a *ngIf="label.carrier=='Endicia'" href="https://tools.usps.com/go/TrackConfirmAction?tRef=fullpage&tLc=2&text28777=&tLabels={{label.trackingNo}}%2C">'{{label.trackingNo}}</a>
+          <a *ngIf="label.carrier=='FedEx'" href="https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber={{label.trackingNo}}&cntry_code=us&locale=en_US">'{{label.trackingNo}}</a>
+          <a *ngIf="label.carrier=='UPS'" href="https://www.ups.com/track?loc=en_US&tracknum={{label.trackingNo}}&requester=WT/trackdetails">'{{label.trackingNo}}</a>
+        </div>
+      </td>
+      <td>
+        <div *ngFor="let log of el.logs;">
+          {{log.content}} ({{log.createdAt | date:'MM/dd/yyyy HH:mm'}})
+        </div>
+      </td>
+      <td>
+        <div *ngFor="let memo of el.memoes;">
+          {{memo.content}} ({{memo.createdAt | date:'MM/dd/yyyy HH:mm'}})
+        </div>
+      </td>
+      <td>
+        <button (click)="removeOrder(el.orderNo)">Remove</button>
+      </td>
+    </tr>
+  </table>
+</div>

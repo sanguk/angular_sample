@@ -1,0 +1,104 @@
+<h1>Fulfilled List</h1>
+
+<form [formGroup]="mainForm" (ngSubmit)="onSubmit(mainForm.value)" class="float-left">
+  <div class="row" style="padding-bottom:5px; padding-right:10px;">
+
+    <div style="padding-left:15px;padding-right:15px;">
+      <select formControlName="location" class="browser-default custom-select" style="width: 100px;font-size: small;">
+        <option *ngFor="let opt of locations" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div>
+      <select formControlName="customer" class="browser-default custom-select" style="width:120px;font-size:small;">
+        <option *ngFor="let opt of customers" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div style="padding-left:20px;padding-right:10px;">
+      <mdb-date-picker [inline]="true" name="mydate" [options]="myDatePickerOptions" [placeholder]="'From'" formControlName="startAt" required></mdb-date-picker>
+    </div>
+    <div>
+      <mdb-date-picker [inline]="true" name="mydate" [options]="myDatePickerOptions" [placeholder]="'To'" formControlName="endAt" required></mdb-date-picker>
+    </div>
+    <div style="padding-left:15px;padding-right:15px;">
+      <button mdbBtn class="btn btn-amber" size="sm" type="submit" mdbWavesEffect>Submit</button>
+    </div>
+    <div style="padding-top:10px;" [hidden]="!total">
+      Total: {{total}}
+    </div>
+  </div>
+</form>
+
+<div align="right">
+  <button mdbBtn type="button" color="light-blue" rounded="true" class="btn btn-success" size="sm" mdbWavesEffect><mdb-icon fas icon="filter"></mdb-icon>Filter</button>
+  <button mdbBtn type="button" color="success" rounded="true" (click)="ExportTOExcel()" class="btn btn-success" size="sm" mdbWavesEffect>Excel</button>
+</div>
+
+
+<table class="table table-bordered table-sm" style="margin-top: 10px;" #TABLE #table>
+  <tr align="center">
+    <th scope="col">Customer #</th>
+    <th scope="col">Order #</th>
+    <th scope="col">Location</th>
+    <th scope="col">Items</th>
+    <th scope="col">PackageItems</th>
+    <th scope="col">ShippingOption</th>
+    <th scope="col">TrackingNo</th>
+    <th scope="col">Paid</th>
+    <th scope="col">Fulfilled</th>
+    <th scope="col">State</th>
+    <th scope="col">PackingSlipPrint</th>
+    <th scope="col">PaidAt</th>
+    <th scope="col">PackingStartAt</th>
+    <th scope="col">PackingEndAt</th>
+    <th scope="col">PackingEndBy</th>
+    <th scope="col">ClosedAt</th>
+    <th scope="col">Log</th>
+    <th scope="col">Memo</th>
+  </tr>
+  <tr *ngFor="let el of elements ; let i = index">
+    <td>{{el.customerNo}}</td>
+    <td>
+      <a [routerLink]="['/individualshipping',el.customer,el.orderNo]">{{el.orderNo}}</a>
+    </td>
+    <td>{{el.location}}</td>
+    <td>
+      <div *ngFor="let item of el.items;">
+        {{item.sku}} ({{item.qty}})
+      </div>
+    </td>
+    <td>
+      <div *ngFor="let pakage of el.packages;">
+        <div *ngFor="let pakageItem of pakage.packageItems;">
+          {{pakageItem.sku}} ({{pakageItem.qty}}) ({{pakageItem.fulfillableQty}})
+        </div>
+      </div>
+    </td>
+    <td>{{el.shippingOption}}</td>
+    <td>
+      <div *ngFor="let label of el.labels;">
+        <a *ngIf="label.carrier=='Endicia'" href="https://tools.usps.com/go/TrackConfirmAction?tRef=fullpage&tLc=2&text28777=&tLabels={{label.trackingNo}}%2C">'{{label.trackingNo}}</a>
+        <a *ngIf="label.carrier=='FedEx'" href="https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber={{label.trackingNo}}&cntry_code=us&locale=en_US">'{{label.trackingNo}}</a>
+        <a *ngIf="label.carrier=='UPS'" href="https://www.ups.com/track?loc=en_US&tracknum={{label.trackingNo}}&requester=WT/trackdetails">'{{label.trackingNo}}</a>
+      </div>
+    </td>
+    <td>{{el.paid}}</td>
+    <td>{{el.fulfilled}}</td>
+    <td>{{el.shipTo.state }}</td>
+    <td>{{el.packingSlipPrint}}</td>
+    <td>{{el.paidAt | date:'MM/dd/yyyy HH:mm'}}</td>
+    <td>{{el.packingStartAt | date:'MM/dd/yyyy HH:mm:ss'}}</td>
+    <td>{{el.packingEndAt | date:'MM/dd/yyyy HH:mm:ss'}}</td>
+    <td>{{el.packingEndBy}}</td>
+    <td>{{el.closedAt | date:'MM/dd/yyyy HH:mm:ss'}}</td>
+    <td>
+      <div *ngFor="let log of el.logs;">
+        {{log.content}} ({{log.createdAt | date:'MM/dd/yyyy HH:mm'}})
+      </div>
+    </td>
+    <td>
+      <div *ngFor="let memo of el.memoes;">
+        {{memo.content}} ({{memo.createdAt | date:'MM/dd/yyyy HH:mm'}})
+      </div>
+    </td>
+  </tr>
+</table>

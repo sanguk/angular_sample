@@ -1,0 +1,76 @@
+<h1>Task List</h1>
+
+<form [formGroup]="mainForm" (ngSubmit)="onSubmit(mainForm.value)" class="float-left">
+  <div class="row" style="padding-bottom:5px; padding-right:10px;">
+
+    <div style="padding-left:15px;padding-right:15px;">
+      <select formControlName="location" class="browser-default custom-select" style="width: 100px;font-size: small;">
+        <option *ngFor="let opt of locations" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div>
+      <select formControlName="customer" class="browser-default custom-select" style="width:120px;font-size:small;">
+        <option *ngFor="let opt of customers" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div style="padding-left:15px;padding-right:15px;">
+      <button mdbBtn class="btn btn-amber" size="sm" type="submit" mdbWavesEffect>Submit</button>
+    </div>
+    <div style="padding-top:10px;" [hidden]="!total">
+      Total: {{total}}
+    </div>
+  </div>
+</form>
+
+
+<div #TABLE #table>
+  <div style="padding-bottom: 5px;padding-top: 5px;">
+    <div class="row float-right">
+      <div align="right">
+        <!--<button (click)="ExportTOExcel()" class="btn btn-success" size="sm">Export</button>-->
+        <button mdbBtn type="button" color="success" rounded="true" (click)="ExportTOExcel()" class="btn btn-success" size="sm" mdbWavesEffect>Excel</button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-bordered table-sm table-hover">
+    <thead>
+      <tr>
+        <th scope="col">task#</th>
+        <th scope="col">location</th>
+        <th scope="col">memo</th>
+        <th scope="col">count</th>
+        <th scope="col">closedCount</th>
+        <th scope="col">cancelledCount</th>
+        <th scope="col">createdBy</th>
+        <th scope="col">createdAt</th>
+        <th scope="col">startAt</th>
+        <th scope="col">endAt</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!--headElements = ['customerId', 'orderNo', 'tplId', 'name', 'address', 'Item Count', 'weight', 'orderAt'];-->
+      <tr *ngFor="let el of elements; let i = index">
+        <td>
+          <a [routerLink]="['/task',el.customer,el.packingSlipPrint]">{{el.packingSlipPrint}}</a>
+        </td>
+        <td>
+          {{el.location}}
+        </td>
+        <td>{{el.memo}}</td>
+        <td>{{el.shippingIdList.length}}</td>
+        <td [class.bg-danger]="(el.closedCount + el.cancelledCount)!=el.shippingIdList.length">{{el.closedCount}}</td>
+        <td [class.bg-warning]="el.cancelledCount!=0">{{el.cancelledCount}}</td>
+        <td>{{el.createdBy}}</td>
+        <td>{{el.createdAt | date:'MM/dd/yyyy HH:mm'}}</td>
+        <td>{{el.startAt | date:'MM/dd/yyyy HH:mm'}}</td>
+        <td>{{el.endAt | date:'MM/dd/yyyy HH:mm'}}</td>
+        <td>
+          <button (click)="printPackingSlipAll(el.customer,el.packingSlipPrint)">Print</button>
+          <button (click)="changeLocation(el.customer,el.packingSlipPrint,el.location)">Change Location</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

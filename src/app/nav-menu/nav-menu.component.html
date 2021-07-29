@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand fixed-top navbar-dark bg-dark" *ngIf="user">
+  <div class="navbar-nav">
+    <a class="nav-item nav-link" routerLink="/">Home</a>
+    <a class="nav-item nav-link" [routerLink]="['/rest-list']">Rest</a>
+    <a class="nav-item nav-link" [routerLink]="['/fulfilled-list']">Fulfilled</a>
+    <a class="nav-item nav-link" [routerLink]="['/task-list']">Task</a>
+    <a class="nav-item nav-link" [routerLink]="['/restocked-list']">Restocked</a>
+    <a class="nav-item nav-link" [routerLink]="['/return-list']">Return</a>
+    <a class="nav-item nav-link" [routerLink]="['/hold-list']">Hold</a>
+    <a class="nav-item nav-link" [routerLink]="['/item-list']">Items</a>
+    <a class="nav-item nav-link" [routerLink]="['/box-list']">Boxes</a>
+    <a class="nav-item nav-link" [routerLink]="['/order-creation']">Manual</a>
+    <a class="nav-item nav-link" [routerLink]="['/reorder']">Reorder</a>
+    <a class="nav-item nav-link" [routerLink]="['/orderdetail']">Order Detail</a>
+    <a class="nav-item nav-link" [routerLink]="['/shipment-creation']">Shipment Creation</a>
+    <a class="nav-item nav-link" [routerLink]="['/admin']" *ngIf="isAdmin">Admin</a>
+    <a class="nav-item nav-link" (click)="logout()">Logout</a>
+  </div>
+</nav>

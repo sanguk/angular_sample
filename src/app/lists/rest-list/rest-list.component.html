@@ -1,0 +1,108 @@
+<h1>Rest List</h1>
+
+<form [formGroup]="mainForm" (ngSubmit)="onSubmit(mainForm.value)" class="float-left">
+  <div class="row" style="padding-bottom:5px; padding-right:10px;">
+
+    <div style="padding-left:15px;padding-right:15px;">
+      <select formControlName="location" class="browser-default custom-select" style="width: 100px;font-size: small;">
+        <option *ngFor="let opt of locations" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div>
+      <select formControlName="customer" class="browser-default custom-select" style="width:120px;font-size:small;">
+        <option *ngFor="let opt of customers" [ngValue]="opt">{{opt}}</option>
+      </select>
+    </div>
+    <div style="padding-left:15px;padding-right:15px;">
+      <button mdbBtn class="btn btn-amber" size="sm" type="submit" mdbWavesEffect>Submit</button>
+    </div>
+    <div style="padding-top:10px;" [hidden]="!total">
+      Total: {{total}}
+    </div>
+  </div>
+</form>
+
+<div align="right">
+  <button mdbBtn type="button" color="light-blue" rounded="true" class="btn btn-success" size="sm" mdbWavesEffect><mdb-icon fas icon="filter"></mdb-icon>Filter</button>
+  <button mdbBtn type="button" color="amber" rounded="true" (click)="passthelist()" class="btn btn-success" size="sm" mdbWavesEffect>Create Task</button>
+  <button mdbBtn type="button" color="success" rounded="true" (click)="ExportTOExcel()" class="btn btn-success" size="sm" mdbWavesEffect>Excel</button>
+</div>
+
+
+<table class="table table-bordered table-sm" style="margin-top: 10px;" #TABLE #table>
+  <tr align="center">
+    <th scope="col">
+      All<input type="checkbox" [(ngModel)]="mastercheck" (click)="test()" />
+    </th>
+    <th scope="col">Type</th>
+    <th scope="col">Customer #</th>
+    <th scope="col">Order #</th>
+    <th scope="col">Location</th>
+    <th scope="col">State</th>
+    <th scope="col">IsHold</th>
+    <th scope="col">Risk</th>
+    <th scope="col">Name / Email</th>
+    <th scope="col">
+      Items
+    </th>
+    <th scope="col">ShippingOption</th>
+    <th scope="col">ReadyAt</th>
+    <th scope="col">Task</th>
+    <th scope="col">PackingSlipPrintAt</th>
+    <th scope="col">PackingEndAt</th>
+    <th scope="col">TrackingNo</th>
+    <th scope="col">Log</th>
+    <th scope="col">Memo</th>
+  </tr>
+  <tr mdbTableCol *ngFor="let el of elements; let i = index">
+    <td style="text-align:center;" [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <input type="checkbox" [checked]="el.checked" value="el.id" (change)="createCheckedList($event, el.id)" />
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">{{el.type}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">{{el.customerNo}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <a [routerLink]="['/individualshipping',el.customer,el.orderNo]">{{el.orderNo}}</a>
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">{{el.location}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH' || el.shipTo.country !='US'" [class.bg-warning]="el.riskLevel=='MEDIUM'"> <span *ngIf="el.shipTo">{{el.shipTo.state }}</span></td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <span *ngIf="el.isHold" class="red-text">{{el.isHold}}</span>
+      <span *ngIf="!el.isHold">{{el.isHold}}</span>
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">{{el.riskLevel}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <span *ngIf="el.shipTo">{{el.shipTo.name}}</span><br />
+      <span *ngIf="el.shipTo">{{el.shipTo.email}}</span>
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <div *ngFor="let item of el.items;">
+        {{item.sku}} ({{item.qty}})
+      </div>
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">{{el.shippingOption}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM' || isEarlierthanYesterday(i) ">{{el.readyAt| date:'MM/dd/yyyy HH:mm'}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <span *ngIf="el.packingSlipPrint">
+        <a [routerLink]="['/task',el.customer,el.packingSlipPrint]">{{el.packingSlipPrint}}</a>
+      </span>
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">{{el.packingSlipPrintAt | date:'MM/dd/yyyy HH:mm'}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">{{el.packingEndAt | date:'MM/dd/yyyy HH:mm'}}</td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <div *ngFor="let label of el.labels;">
+        '{{label.trackingNo}}
+      </div>
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <div *ngFor="let log of el.logs;">
+        {{log.content}} ({{log.createdAt | date:'MM/dd/yyyy HH:mm'}})
+      </div>
+    </td>
+    <td [class.bg-danger]="el.riskLevel=='HIGH'" [class.bg-warning]="el.riskLevel=='MEDIUM'">
+      <div *ngFor="let memo of el.memoes;">
+        {{memo.content}} ({{memo.createdAt | date:'MM/dd/yyyy HH:mm'}})
+      </div>
+    </td>
+  </tr>
+
+</table>
